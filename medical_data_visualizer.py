@@ -7,24 +7,19 @@ import numpy as np
 def draw_cat_plot():
     df = pd.read_csv("medical_examination.csv")
 
-    # 1. Add overweight column
     df["overweight"] = (df["weight"] / ((df["height"] / 100) ** 2) > 25).astype(int)
 
-    # 2. Normalize cholesterol and gluc
     df["cholesterol"] = (df["cholesterol"] > 1).astype(int)
     df["gluc"] = (df["gluc"] > 1).astype(int)
 
-    # 3. Melt data
     df_cat = pd.melt(
         df,
         id_vars=["cardio"],
         value_vars=["cholesterol", "gluc", "smoke", "alco", "active", "overweight"]
     )
 
-    # 4. Group and reformat
     df_cat = df_cat.groupby(["cardio", "variable", "value"]).size().reset_index(name="total")
 
-    # 5. Draw catplot
     fig = sns.catplot(
         data=df_cat,
         x="variable",
